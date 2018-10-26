@@ -3,5 +3,8 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QPixmap>
+#include <QRgb>
+#include <QtGlobal>
 
 #endif // STABLE_H

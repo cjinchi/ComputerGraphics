@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "stable.h"
 #include "config.h"
+#include "state.h"
 
 namespace Ui {
 class MainWindow;

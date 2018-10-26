@@ -33,7 +33,9 @@ HEADERS += \
         mainwindow.h \
     draw.h \
     stable.h \
-    config.h
+    config.h \
+    state.h \
+    colored_point.h
 
 FORMS += \
         mainwindow.ui
