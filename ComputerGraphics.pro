@@ -26,10 +26,14 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    draw.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    draw.h \
+    stable.h \
+    config.h
 
 FORMS += \
         mainwindow.ui
@@ -38,3 +42,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+PRECOMPILED_HEADER = stable.h
+QMAKE_CXXFLAGS += /MP
