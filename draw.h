@@ -24,6 +24,7 @@ private:
     void drawLine(bool temporary,QPainter &painter);
     void drawCircle(bool temporary,QPainter &painter);
     colored_point getColoredPoint(int x,int y);
+    void releaseBuffer(QPainter &painter);
 
     void mousePressEvent(QMouseEvent *mpe);
     void mouseReleaseEvent(QMouseEvent *mpe);

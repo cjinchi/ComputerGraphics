@@ -45,21 +45,8 @@ void draw::paintEvent(QPaintEvent *e)
 void draw::drawLine(bool temporary,QPainter &painter)
 {
     QPen init_pen = painter.pen();
-
-    if(!this->buffer.empty())
-    {
-        for(QVector<colored_point>::iterator i=buffer.begin();i!=buffer.end();i++)
-        {
-            QColor color(i->rgb);
-            painter.setPen(color);
-            painter.drawPoint(i->x,i->y);
-        }
-        buffer.clear();
-    }
-
+    this->releaseBuffer(painter);
     painter.setPen(init_pen);
-
-
 
     if(p1.x()==p2.x()||qAbs((p1.y()-p2.y())/(p1.x()-p2.x()))>1)
     {
@@ -75,29 +62,52 @@ void draw::drawLine(bool temporary,QPainter &painter)
             p4 = p1;
         }
 
-        const int a = p3.x()-p4.x();
-        const int b = p4.y()-p3.y();
-        int d = 2 * a+b;
-        const int delta_when_positive = a;
-        const int delta_when_negative = a+b;
-        int j = p3.x();
-        for(int i = p3.y();i<=p4.y();i++)
+        bool increase = (p4.x()>p3.x());
+
+        const int a = p4.y()-p3.y();
+        const int b = p3.x()-p4.x();
+        int d = 0;
+        int d_delta_when_positive = 0,d_delta_when_negative = 0;
+        int x_delta_when_positive = 0,x_delta_when_negative = 0;
+        if(increase)
+        {
+
+            d = a+2*b;
+            d_delta_when_positive = 2*b;
+            d_delta_when_negative = 2*a+2*b;
+            x_delta_when_positive = 1;
+            x_delta_when_negative = 0;
+        }
+        else
+        {
+            d = -a+2*b;
+            d_delta_when_positive = 2*b-2*a;
+            d_delta_when_negative = 2*b;
+            x_delta_when_positive = 0;
+            x_delta_when_negative = -1;
+        }
+        int i = p3.x();
+        for(int j = p3.y();j<=p4.y();j++)
         {
             if(temporary)
             {
-                buffer.push_back(getColoredPoint(j,i));
+                buffer.push_back(getColoredPoint(i,j));
             }
-            painter.drawPoint(j,i);
+            painter.drawPoint(i,j);
+
+
             if(d<0)
             {
-                d+=delta_when_negative;
-                j++;
+                d += d_delta_when_negative;
+                i += x_delta_when_negative;
             }
             else
             {
-                d+=delta_when_positive;
+                d += d_delta_when_positive;
+                i += x_delta_when_positive;
             }
         }
+
     }
     else
     {
@@ -113,31 +123,57 @@ void draw::drawLine(bool temporary,QPainter &painter)
             p4 = p1;
         }
 
+        bool increase = (p4.y()>p3.y());
+
         const int a = p3.y()-p4.y();
         const int b = p4.x()-p3.x();
-        int d = 2 * a+b;
-        const int delta_when_positive = a;
-        const int delta_when_negative = a+b;
-        const int j_delta = (p3.y()<p4.y()?1:-1);
+        int d = 0;
+        int d_delta_when_positive = 0,d_delta_when_negative = 0;
+        int y_delta_when_positive = 0,y_delta_when_negative = 0;
+        if(increase)
+        {
+            d = 2 * a+b;
+            d_delta_when_positive = 2*a;
+            d_delta_when_negative = 2*a+2*b;
+            y_delta_when_positive = 0;
+            y_delta_when_negative = 1;
+        }
+        else
+        {
+            d = 2 * a-b;
+            d_delta_when_positive = 2*a-2*b;
+            d_delta_when_negative = 2*a;
+            y_delta_when_positive = -1;
+            y_delta_when_negative = 0;
+        }
         int j = p3.y();
         for(int i = p3.x();i<=p4.x();i++)
         {
-            if(d<0)
-            {
-                d+=delta_when_negative;
-                j+=j_delta;
-            }
-            else
-            {
-                d+=delta_when_positive;
-            }
+
+
             if(temporary)
             {
                 buffer.push_back(getColoredPoint(i,j));
             }
             painter.drawPoint(i,j);
+
+
+            if(d<0)
+            {
+                d += d_delta_when_negative;
+                j += y_delta_when_negative;
+            }
+            else
+            {
+                d += d_delta_when_positive;
+                j += y_delta_when_positive;
+            }
         }
+
     }
+
+
+
 }
 
 void draw::drawCircle(bool temporary,QPainter &painter)
@@ -167,5 +203,19 @@ void draw::mouseReleaseEvent(QMouseEvent *mpe)
 {
     this->p2=mpe->pos();
     this->drawing(false);
+}
+
+void draw::releaseBuffer(QPainter &painter)
+{
+    if(!this->buffer.empty())
+    {
+        for(QVector<colored_point>::iterator i=buffer.begin();i!=buffer.end();i++)
+        {
+            QColor color(i->rgb);
+            painter.setPen(color);
+            painter.drawPoint(i->x,i->y);
+        }
+        buffer.clear();
+    }
 }
 
