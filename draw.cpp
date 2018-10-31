@@ -2,7 +2,9 @@
 
 draw::draw(QWidget *parent) : QWidget(parent)
 {
-    this->setCurrentShape(LINE);
+
+    able_to_drag = false;
+//    setCurrentShape(ELLIPSE);
 
     pixmap = QPixmap(WINDOW_WIDTH,WINDOW_HEIGHT);
     pixmap.fill(Qt::white);
@@ -11,6 +13,13 @@ draw::draw(QWidget *parent) : QWidget(parent)
     p2 = QPoint(0,0);
 
     buffer.reserve(10000);
+
+    moveTime = 0;
+
+    ellipse_xc = 0;
+    ellipse_yc = 0;
+    ellipse_rx = 0;
+    ellipse_ry = 0;
 }
 
 void draw::setCurrentShape(shape s)
@@ -30,6 +39,9 @@ void draw::drawing(bool temporary)
     case CIRCLE:
         drawCircle(temporary,painter);
         break;
+    case ELLIPSE:
+        drawEllipse(temporary,painter);
+        break;
     }
 
     update();
@@ -48,7 +60,7 @@ void draw::drawLine(bool temporary,QPainter &painter)
     this->releaseBuffer(painter);
     painter.setPen(init_pen);
 
-    if(p1.x()==p2.x()||qAbs((p1.y()-p2.y())/(p1.x()-p2.x()))>1)
+    if(p1.x()==p2.x()||qAbs((p1.y()-p2.y())/(p1.x()-p2.x()))>=1)
     {
         QPoint p3,p4;
         if(p1.y()<p2.y())
@@ -75,16 +87,16 @@ void draw::drawLine(bool temporary,QPainter &painter)
             d = a+2*b;
             d_delta_when_positive = 2*b;
             d_delta_when_negative = 2*a+2*b;
-            x_delta_when_positive = 1;
-            x_delta_when_negative = 0;
+            x_delta_when_positive = 0;
+            x_delta_when_negative = 1;
         }
         else
         {
             d = -a+2*b;
             d_delta_when_positive = 2*b-2*a;
             d_delta_when_negative = 2*b;
-            x_delta_when_positive = 0;
-            x_delta_when_negative = -1;
+            x_delta_when_positive = -1;
+            x_delta_when_negative = 0;
         }
         int i = p3.x();
         for(int j = p3.y();j<=p4.y();j++)
@@ -171,15 +183,58 @@ void draw::drawLine(bool temporary,QPainter &painter)
         }
 
     }
-
-
-
 }
 
 void draw::drawCircle(bool temporary,QPainter &painter)
 {
-    Q_UNUSED(temporary);
-    Q_UNUSED(painter);
+    QPen init_pen = painter.pen();
+    this->releaseBuffer(painter);
+    painter.setPen(init_pen);
+
+    int radius = qFloor(qSqrt(qPow(p1.x()-p2.x(),2)+qPow(p1.y()-p2.y(),2)))/2;
+    int x_move = (p1.x()+p2.x())/2;
+    int y_move = (p1.y()+p2.y())/2;
+
+    int x = 0,y= radius;
+    int d = 1-radius;
+    int x_delta = 3,y_delta = 5-radius -radius;
+    while(x<y)
+    {
+        if(temporary)
+        {
+            buffer.push_back(getColoredPoint(x+x_move,y+y_move));
+            buffer.push_back(getColoredPoint(y+x_move,x+y_move));
+            buffer.push_back(getColoredPoint(-x+x_move,y+y_move));
+            buffer.push_back(getColoredPoint(y+x_move,-x+y_move));
+            buffer.push_back(getColoredPoint(x+x_move,-y+y_move));
+            buffer.push_back(getColoredPoint(-y+x_move,x+y_move));
+            buffer.push_back(getColoredPoint(-x+x_move,-y+y_move));
+            buffer.push_back(getColoredPoint(-y+x_move,-x+y_move));
+        }
+        painter.drawPoint(x+x_move,y+y_move);
+        painter.drawPoint(y+x_move,x+y_move);
+        painter.drawPoint(-x+x_move,y+y_move);
+        painter.drawPoint(y+x_move,-x+y_move);
+        painter.drawPoint(x+x_move,-y+y_move);
+        painter.drawPoint(-y+x_move,x+y_move);
+        painter.drawPoint(-x+x_move,-y+y_move);
+        painter.drawPoint(-y+x_move,-x+y_move);
+        if(d<0)
+        {
+            d+=x_delta;
+            x_delta+=2;
+            y_delta+=2;
+            x++;
+        }
+        else
+        {
+            d+=y_delta;
+            x_delta+=2;
+            y_delta+=4;
+            x++;
+            y--;
+        }
+    }
 }
 
 colored_point draw::getColoredPoint(int x,int y)
@@ -190,17 +245,29 @@ colored_point draw::getColoredPoint(int x,int y)
 
 void draw::mousePressEvent(QMouseEvent *mpe)
 {
+    if(!able_to_drag)
+        return;
     this->p1 = mpe->pos();
     this->p2 = mpe->pos();
+
+    qDebug()<<mpe->pos().x()<<","<<mpe->pos().y()<<":"<<this->size().width();
+
 }
 void draw::mouseMoveEvent(QMouseEvent *mpe)
 {
-    this->p2 = mpe->pos();
-    this->drawing(true);
-
+    if(!able_to_drag)
+        return;
+    moveTime = (moveTime+1)%3;
+    if(moveTime==1)
+    {
+        this->p2 = mpe->pos();
+        this->drawing(true);
+    }
 }
 void draw::mouseReleaseEvent(QMouseEvent *mpe)
 {
+    if(!able_to_drag)
+        return;
     this->p2=mpe->pos();
     this->drawing(false);
 }
@@ -219,3 +286,50 @@ void draw::releaseBuffer(QPainter &painter)
     }
 }
 
+
+void draw::drawEllipse(bool temporary,QPainter &painter)
+{
+    int rx = 50,ry=50;
+    int xc = 300,yc =300;
+    Q_UNUSED(temporary);
+    int p = ry*ry-rx*rx*ry+rx*rx/4;
+    int x=0,y=ry;
+    while(ry*ry*x<rx*rx*y)
+    {
+        painter.drawPoint(x+xc,y+yc);
+        painter.drawPoint(-x+xc,y+yc);
+        painter.drawPoint(x+xc,-y+yc);
+        painter.drawPoint(-x+xc,-y+yc);
+        if(p<=0)
+        {
+            x++;
+            p = p+ 2*ry*ry*x+ry*ry;
+        }
+        else
+        {
+            x++;
+            y--;
+            p = p + 2*ry*ry*x-2*rx*rx*y+ry*ry;
+        }
+    }
+
+    p = qFloor(ry*ry*(x+0.5)*(x+0.5)+rx*rx*(y-1)*(y-1)-rx*rx*ry*ry);
+    while(y>=0)
+    {
+        painter.drawPoint(x+xc,y+yc);
+        painter.drawPoint(-x+xc,y+yc);
+        painter.drawPoint(x+xc,-y+yc);
+        painter.drawPoint(-x+xc,-y+yc);
+        if(p>0)
+        {
+            y--;
+            p = p-2*rx*rx*y+rx*rx;
+        }
+        else
+        {
+            x++;
+            y--;
+            p = p+ 2*ry*ry*x-2*rx*rx*y+rx*rx;
+        }
+    }
+}

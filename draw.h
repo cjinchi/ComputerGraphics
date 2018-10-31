@@ -15,14 +15,22 @@ public:
 
 private:
     shape current_shape;
+    input_type current_input_type;
+    bool able_to_drag;
+
     QPixmap pixmap;
     QPoint p1,p2;
     QVector<colored_point> buffer;
+    int moveTime;
+
+    int ellipse_xc,ellipse_yc;
+    int ellipse_rx,ellipse_ry;
 private:
     void paintEvent(QPaintEvent *e);
     void drawing(bool temporary);
     void drawLine(bool temporary,QPainter &painter);
     void drawCircle(bool temporary,QPainter &painter);
+    void drawEllipse(bool temporary,QPainter &painter);
     colored_point getColoredPoint(int x,int y);
     void releaseBuffer(QPainter &painter);
 

@@ -27,7 +27,10 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    draw.cpp
+    draw.cpp \
+    line_select.cpp \
+    circle_select.cpp \
+    ellipse_select.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -35,10 +38,16 @@ HEADERS += \
     stable.h \
     config.h \
     state.h \
-    colored_point.h
+    colored_point.h \
+    line_select.h \
+    circle_select.h \
+    ellipse_select.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    line_select.ui \
+    circle_select.ui \
+    ellipse_select.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
