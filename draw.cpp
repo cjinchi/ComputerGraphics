@@ -22,10 +22,10 @@ draw::draw(QWidget *parent) : QWidget(parent)
     ellipse_ry = 0;
 }
 
-void draw::setCurrentShape(shape s)
-{
-    this->current_shape = s;
-}
+//void draw::setCurrentShape(shape s)
+//{
+//    this->current_shape = s;
+//}
 
 void draw::drawing(bool temporary)
 {
@@ -137,13 +137,14 @@ void draw::drawLine(bool temporary,QPainter &painter)
 
         bool increase = (p4.y()>p3.y());
 
-        const int a = p3.y()-p4.y();
-        const int b = p4.x()-p3.x();
+        const int a = p3.y()-p4.y();    //方程参数
+        const int b = p4.x()-p3.x();    //方程参数
         int d = 0;
         int d_delta_when_positive = 0,d_delta_when_negative = 0;
         int y_delta_when_positive = 0,y_delta_when_negative = 0;
         if(increase)
         {
+            //斜率大于0,小于1
             d = 2 * a+b;
             d_delta_when_positive = 2*a;
             d_delta_when_negative = 2*a+2*b;
@@ -192,12 +193,13 @@ void draw::drawCircle(bool temporary,QPainter &painter)
     painter.setPen(init_pen);
 
     int radius = qFloor(qSqrt(qPow(p1.x()-p2.x(),2)+qPow(p1.y()-p2.y(),2)))/2;
-    int x_move = (p1.x()+p2.x())/2;
-    int y_move = (p1.y()+p2.y())/2;
+    int x_move = (p1.x()+p2.x())/2;    //圆心与原点在x轴的偏移
+    int y_move = (p1.y()+p2.y())/2;    //圆心与原点在y轴的偏移
 
-    int x = 0,y= radius;
-    int d = 1-radius;
-    int x_delta = 3,y_delta = 5-radius -radius;
+    int x = 0,y= radius;    //第一个点
+    int d = 1-radius;       //变量d初始值
+    int x_delta = 3,y_delta = 5-radius -radius; //x和y的delta值
+
     while(x<y)
     {
         if(temporary)
@@ -250,7 +252,6 @@ void draw::mousePressEvent(QMouseEvent *mpe)
     this->p1 = mpe->pos();
     this->p2 = mpe->pos();
 
-    qDebug()<<mpe->pos().x()<<","<<mpe->pos().y()<<":"<<this->size().width();
 
 }
 void draw::mouseMoveEvent(QMouseEvent *mpe)
@@ -289,11 +290,12 @@ void draw::releaseBuffer(QPainter &painter)
 
 void draw::drawEllipse(bool temporary,QPainter &painter)
 {
-    int rx = 50,ry=50;
-    int xc = 300,yc =300;
+    int rx = ellipse_rx,ry=ellipse_ry;
+    int xc = ellipse_xc,yc =ellipse_yc;
     Q_UNUSED(temporary);
-    int p = ry*ry-rx*rx*ry+rx*rx/4;
-    int x=0,y=ry;
+
+    int p = ry*ry-rx*rx*ry+rx*rx/4; //区域1初始决策参数
+    int x=0,y=ry;                   //初始点
     while(ry*ry*x<rx*rx*y)
     {
         painter.drawPoint(x+xc,y+yc);
@@ -313,7 +315,7 @@ void draw::drawEllipse(bool temporary,QPainter &painter)
         }
     }
 
-    p = qFloor(ry*ry*(x+0.5)*(x+0.5)+rx*rx*(y-1)*(y-1)-rx*rx*ry*ry);
+    p = qFloor(ry*ry*(x+0.5)*(x+0.5)+rx*rx*(y-1)*(y-1)-rx*rx*ry*ry);//区域2初始决策参数
     while(y>=0)
     {
         painter.drawPoint(x+xc,y+yc);
@@ -332,4 +334,81 @@ void draw::drawEllipse(bool temporary,QPainter &painter)
             p = p+ 2*ry*ry*x-2*rx*rx*y+rx*rx;
         }
     }
+}
+
+void draw::toDrawLineByDrag()
+{
+    able_to_drag = true;
+    current_shape = LINE;
+}
+
+void draw::toDrawLineByPara(int a,int b,int c)
+{
+    able_to_drag = false;
+    current_shape = LINE;
+
+    int max_x = this->size().width();
+
+    p1.setX(0);
+    p1.setY(-c/b);
+    p2.setX(max_x);
+    p2.setY((-c-a*max_x)/b);
+
+    drawing(false);
+}
+
+void draw::toDrawCircleByDrag()
+{
+    able_to_drag = true;
+    current_shape = CIRCLE;
+}
+
+void draw::toDrawCircleByPara(int x0,int y0,int r)
+{
+    able_to_drag = false;
+    current_shape = CIRCLE;
+
+    p1.setX(x0-r);
+    p1.setY(y0);
+    p2.setX(x0+r);
+    p2.setY(y0);
+
+    drawing(false);
+}
+
+void draw::toDrawEllipseByPara(int xc,int rx,int yc,int ry)
+{
+    able_to_drag = false;
+    current_shape = ELLIPSE;
+
+    ellipse_xc = xc;
+    ellipse_yc = yc;
+    ellipse_rx = rx;
+    ellipse_ry = ry;
+
+    drawing(false);
+}
+
+void draw::clearPixmap()
+{
+    QPainter painter(&pixmap);
+    painter.setPen(Qt::white);
+
+    int x = this->size().width();
+    int y = this->size().height();
+
+    for(int i=0;i<x;i++)
+    {
+        for(int j=0;j<y;j++)
+        {
+            painter.drawPoint(i,j);
+        }
+    }
+
+    update();
+}
+
+void draw::savePixmap(QString path)
+{
+    pixmap.save(path,"png");
 }

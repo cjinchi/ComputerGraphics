@@ -15,8 +15,17 @@ public:
     explicit circle_select(QWidget *parent = nullptr);
     ~circle_select();
 
+private slots:
+    void on_parameter_clicked();
+
+    void on_drag_clicked();
+
 private:
     Ui::circle_select *ui;
+
+signals:
+    void drawCircleByDrag();
+    void drawCircleByPara(int x0,int y0,int r);
 };
 
 #endif // CIRCLE_SELECT_H

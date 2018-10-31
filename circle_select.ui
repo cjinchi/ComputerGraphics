@@ -25,7 +25,7 @@
   <property name="windowTitle">
    <string>选择圆画图方式</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="drag">
    <property name="geometry">
     <rect>
      <x>70</x>
@@ -47,10 +47,10 @@
     </size>
    </property>
    <property name="text">
-    <string>拖拽画图</string>
+    <string>鼠标拖拽画图</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="parameter">
    <property name="geometry">
     <rect>
      <x>70</x>
@@ -106,7 +106,7 @@
     <string>(x-</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="x0">
    <property name="geometry">
     <rect>
      <x>400</x>
@@ -159,7 +159,7 @@
     <string>)²+(y-</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="y0">
    <property name="geometry">
     <rect>
      <x>580</x>
@@ -212,7 +212,7 @@
     <string>)²=</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_3">
+  <widget class="QLineEdit" name="r">
    <property name="geometry">
     <rect>
      <x>710</x>

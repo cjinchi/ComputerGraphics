@@ -16,12 +16,17 @@ public:
     ~line_select();
 
 private slots:
-    void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+    void on_drag_clicked();
+
+    void on_parameter_clicked();
 
 private:
     Ui::line_select *ui;
+
+signals:
+    void drawLineByPara(int a,int b,int c);
+    void drawLineByDrag();
 };
 
 #endif // LINE_SELECT_H

@@ -42,7 +42,19 @@ private:
 signals:
 
 public slots:
-    void setCurrentShape(shape s);
+    void toDrawLineByDrag();
+
+    void toDrawLineByPara(int a,int b,int c);
+
+    void toDrawCircleByDrag();
+
+    void toDrawCircleByPara(int x0,int y0,int r);
+
+    void toDrawEllipseByPara(int xc,int rx,int yc,int ry);
+
+    void clearPixmap();
+
+    void savePixmap(QString path);
 };
 
 #endif // DRAW_H

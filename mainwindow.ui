@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>800</width>
     <height>300</height>
    </rect>
   </property>
@@ -33,14 +33,16 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>800</width>
      <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>文件</string>
     </property>
+    <addaction name="actionSave_as"/>
+    <addaction name="actioninfo"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -69,6 +71,7 @@
    <addaction name="actionLine"/>
    <addaction name="actionCircle"/>
    <addaction name="actionEllipse"/>
+   <addaction name="actionClear"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionLine">
@@ -86,6 +89,21 @@
     <string>椭圆</string>
    </property>
   </action>
+  <action name="actionClear">
+   <property name="text">
+    <string>清空</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>另存为</string>
+   </property>
+  </action>
+  <action name="actioninfo">
+   <property name="text">
+    <string>说明</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -94,8 +112,139 @@
    <extends>QWidget</extends>
    <header>draw.h</header>
    <container>1</container>
+   <slots>
+    <slot>toDrawLineByDrag()</slot>
+    <slot>toDrawLineByPara(int,int,int)</slot>
+    <slot>toDrawCircleByDrag()</slot>
+    <slot>toDrawCircleByPara(int,int,int)</slot>
+    <slot>toDrawEllipseByPara(int,int,int,int)</slot>
+    <slot>clearPixmap()</slot>
+    <slot>savePixmap(QString)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toDrawCircleByDrag()</signal>
+   <receiver>widget</receiver>
+   <slot>toDrawCircleByDrag()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>117</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>121</x>
+     <y>230</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toDrawLineByDrag()</signal>
+   <receiver>widget</receiver>
+   <slot>toDrawLineByDrag()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>172</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toDrawLineByPara(int,int,int)</signal>
+   <receiver>widget</receiver>
+   <slot>toDrawLineByPara(int,int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>172</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toDrawCircleByPara(int,int,int)</signal>
+   <receiver>widget</receiver>
+   <slot>toDrawCircleByPara(int,int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>172</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toDrawEllipseByPara(int,int,int,int)</signal>
+   <receiver>widget</receiver>
+   <slot>toDrawEllipseByPara(int,int,int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>172</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>clearPixmap()</signal>
+   <receiver>widget</receiver>
+   <slot>clearPixmap()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>43</x>
+     <y>274</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>54</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>savePixmap(QString)</signal>
+   <receiver>widget</receiver>
+   <slot>savePixmap(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>203</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <signal>toDrawLineByDrag()</signal>
+  <signal>toDrawLineByPara(int,int,int)</signal>
+  <signal>toDrawCircleByDrag()</signal>
+  <signal>toDrawCircleByPara(int,int,int)</signal>
+  <signal>toDrawEllipseByPara(int,int,int,int)</signal>
+  <signal>clearPixmap()</signal>
+  <signal>savePixmap(QString)</signal>
+ </slots>
 </ui>

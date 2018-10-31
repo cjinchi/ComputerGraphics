@@ -17,6 +17,11 @@ public:
 
 private:
     Ui::ellipse_select *ui;
+
+signals:
+    void drawEllipseByPara(int xc,int rx,int yc,int ry);
+private slots:
+    void on_parameter_clicked();
 };
 
 #endif // ELLIPSE_SELECT_H
