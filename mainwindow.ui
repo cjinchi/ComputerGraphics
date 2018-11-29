@@ -71,6 +71,8 @@
    <addaction name="actionLine"/>
    <addaction name="actionCircle"/>
    <addaction name="actionEllipse"/>
+   <addaction name="actionpolygon"/>
+   <addaction name="actionfill"/>
    <addaction name="actionClear"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -104,6 +106,16 @@
     <string>说明</string>
    </property>
   </action>
+  <action name="actionpolygon">
+   <property name="text">
+    <string>多边形</string>
+   </property>
+  </action>
+  <action name="actionfill">
+   <property name="text">
+    <string>填充</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -119,6 +131,7 @@
     <slot>clearPixmap()</slot>
     <slot>savePixmap(QString)</slot>
     <slot>toDrawShapeByDrag(shape)</slot>
+    <slot>toFill()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -220,6 +233,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toFill()</signal>
+   <receiver>widget</receiver>
+   <slot>toFill()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>266</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>245</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>toDrawLineByDrag()</signal>
@@ -230,5 +259,6 @@
   <signal>clearPixmap()</signal>
   <signal>savePixmap(QString)</signal>
   <signal>toDrawShapeByDrag(shape)</signal>
+  <signal>toFill()</signal>
  </slots>
 </ui>

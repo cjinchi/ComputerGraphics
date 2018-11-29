@@ -30,7 +30,8 @@ SOURCES += \
     draw.cpp \
     line_select.cpp \
     circle_select.cpp \
-    ellipse_select.cpp
+    ellipse_select.cpp \
+    polygon_info.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -40,13 +41,15 @@ HEADERS += \
     state.h \
     line_select.h \
     circle_select.h \
-    ellipse_select.h
+    ellipse_select.h \
+    polygon_info.h
 
 FORMS += \
         mainwindow.ui \
     line_select.ui \
     circle_select.ui \
-    ellipse_select.ui
+    ellipse_select.ui \
+    polygon_info.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

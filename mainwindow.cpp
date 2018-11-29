@@ -113,3 +113,13 @@ void MainWindow::on_actioninfo_triggered()
     msgbox.exec();
 }
 
+
+void MainWindow::on_actionpolygon_triggered()
+{
+    emit toDrawShapeByDrag(POLYGON);
+}
+
+void MainWindow::on_actionfill_triggered()
+{
+    emit toFill();
+}

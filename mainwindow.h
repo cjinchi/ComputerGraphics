@@ -44,6 +44,10 @@ private slots:
 
     void on_actioninfo_triggered();
 
+    void on_actionpolygon_triggered();
+
+    void on_actionfill_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString help_text;
@@ -56,6 +60,8 @@ signals:
     void toDrawCircleByPara(int x0,int y0,int r);
 
     void toDrawEllipseByPara(int xc,int rx,int yc,int ry);
+
+    void toFill();
 
     void clearPixmap();
 
