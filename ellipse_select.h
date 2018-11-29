@@ -20,8 +20,10 @@ private:
 
 signals:
     void drawEllipseByPara(int xc,int rx,int yc,int ry);
+    void drawEllipseByDrag();
 private slots:
     void on_parameter_clicked();
+    void on_parameter_2_clicked();
 };
 
 #endif // ELLIPSE_SELECT_H

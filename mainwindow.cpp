@@ -15,12 +15,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     help_text = tr("目前使用Qt的坐标系统，绘图区域左上角为坐标原点，从左到右为x轴正方向，从上到下为y轴正方向.建议直接使用方程默认参数进行测试.");
 
-    QMessageBox msgbox;
-    msgbox.setFixedSize(800,600);
-    msgbox.setWindowTitle(tr("说明"));
-    msgbox.setText(help_text);
-    msgbox.setModal(true);
-    msgbox.exec();
+//    QMessageBox msgbox;
+//    msgbox.setFixedSize(800,600);
+//    msgbox.setWindowTitle(tr("说明"));
+//    msgbox.setText(help_text);
+//    msgbox.setModal(true);
+//    msgbox.exec();
 }
 
 MainWindow::~MainWindow()
@@ -53,6 +53,7 @@ void MainWindow::on_actionEllipse_triggered()
 {
     ellipse_select x;
     QObject::connect(&x,SIGNAL(drawEllipseByPara(int,int,int,int)),this,SLOT(drawEllipseByPara(int,int,int,int)));
+    QObject::connect(&x,SIGNAL(drawEllipseByDrag()),this,SLOT(drawEllipseByDrag()));
     x.setModal(true);
     x.show();
     x.exec();
@@ -60,7 +61,7 @@ void MainWindow::on_actionEllipse_triggered()
 
 void MainWindow::drawLineByDrag()
 {
-    emit toDrawLineByDrag();
+    emit toDrawShapeByDrag(LINE);
 }
 
 void MainWindow::drawLineByPara(int a,int b,int c)
@@ -70,12 +71,17 @@ void MainWindow::drawLineByPara(int a,int b,int c)
 
 void MainWindow::drawCircleByDrag()
 {
-    emit toDrawCircleByDrag();
+    emit toDrawShapeByDrag(CIRCLE);
 }
 
 void MainWindow::drawCircleByPara(int x0,int y0,int r)
 {
     emit toDrawCircleByPara(x0,y0,r);
+}
+
+void MainWindow::drawEllipseByDrag()
+{
+    emit toDrawShapeByDrag(ELLIPSE);
 }
 
 void MainWindow::drawEllipseByPara(int xc,int rx,int yc,int ry)
@@ -106,3 +112,4 @@ void MainWindow::on_actioninfo_triggered()
     msgbox.setModal(true);
     msgbox.exec();
 }
+

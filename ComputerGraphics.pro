@@ -38,7 +38,6 @@ HEADERS += \
     stable.h \
     config.h \
     state.h \
-    colored_point.h \
     line_select.h \
     circle_select.h \
     ellipse_select.h

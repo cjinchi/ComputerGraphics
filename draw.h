@@ -15,38 +15,34 @@ public:
 
 private:
     shape current_shape;
-    input_type current_input_type;
-    bool able_to_drag;
+    bool able_dragging;
+    dragging_state current_dragging_state;
+    bool should_reload_pixmap;
 
     QPixmap pixmap;
+    QPixmap temp_pixmap;
     QPoint p1,p2;
-    QVector<colored_point> buffer;
-    int moveTime;
 
     int ellipse_xc,ellipse_yc;
     int ellipse_rx,ellipse_ry;
 private:
-    void paintEvent(QPaintEvent *e);
-    void drawing(bool temporary);
-    void drawLine(bool temporary,QPainter &painter);
-    void drawCircle(bool temporary,QPainter &painter);
-    void drawEllipse(bool temporary,QPainter &painter);
-    colored_point getColoredPoint(int x,int y);
-    void releaseBuffer(QPainter &painter);
+
+    void drawLine(QPainter &painter);
+    void drawCircle(QPainter &painter);
+    void drawEllipse(QPainter &painter);
 
     void mousePressEvent(QMouseEvent *mpe);
     void mouseReleaseEvent(QMouseEvent *mpe);
     void mouseMoveEvent(QMouseEvent *mpe);
+    void paintEvent(QPaintEvent *e);
 
 
 signals:
 
 public slots:
-    void toDrawLineByDrag();
+    void toDrawShapeByDrag(shape shape_to_draw);
 
     void toDrawLineByPara(int a,int b,int c);
-
-    void toDrawCircleByDrag();
 
     void toDrawCircleByPara(int x0,int y0,int r);
 

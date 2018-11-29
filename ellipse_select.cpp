@@ -63,3 +63,9 @@ void ellipse_select::on_parameter_clicked()
         this->close();
     }
 }
+
+void ellipse_select::on_parameter_2_clicked()
+{
+    emit drawEllipseByDrag();
+    this->close();
+}

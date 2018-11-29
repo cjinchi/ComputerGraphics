@@ -113,66 +113,17 @@
    <header>draw.h</header>
    <container>1</container>
    <slots>
-    <slot>toDrawLineByDrag()</slot>
     <slot>toDrawLineByPara(int,int,int)</slot>
-    <slot>toDrawCircleByDrag()</slot>
     <slot>toDrawCircleByPara(int,int,int)</slot>
     <slot>toDrawEllipseByPara(int,int,int,int)</slot>
     <slot>clearPixmap()</slot>
     <slot>savePixmap(QString)</slot>
+    <slot>toDrawShapeByDrag(shape)</slot>
    </slots>
   </customwidget>
  </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>toDrawCircleByDrag()</signal>
-   <receiver>widget</receiver>
-   <slot>toDrawCircleByDrag()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>117</x>
-     <y>273</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>121</x>
-     <y>230</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>toDrawLineByDrag()</signal>
-   <receiver>widget</receiver>
-   <slot>toDrawLineByDrag()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>172</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>toDrawLineByPara(int,int,int)</signal>
-   <receiver>widget</receiver>
-   <slot>toDrawLineByPara(int,int,int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>172</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>MainWindow</sender>
    <signal>toDrawCircleByPara(int,int,int)</signal>
@@ -237,6 +188,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toDrawLineByPara(int,int,int)</signal>
+   <receiver>widget</receiver>
+   <slot>toDrawLineByPara(int,int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>172</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>toDrawShapeByDrag(shape)</signal>
+   <receiver>widget</receiver>
+   <slot>toDrawShapeByDrag(shape)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>797</x>
+     <y>236</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>724</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>toDrawLineByDrag()</signal>
@@ -246,5 +229,6 @@
   <signal>toDrawEllipseByPara(int,int,int,int)</signal>
   <signal>clearPixmap()</signal>
   <signal>savePixmap(QString)</signal>
+  <signal>toDrawShapeByDrag(shape)</signal>
  </slots>
 </ui>

@@ -34,6 +34,8 @@ private slots:
 
     void drawCircleByPara(int x0,int y0,int r);
 
+    void drawEllipseByDrag();
+
     void drawEllipseByPara(int xc,int rx,int yc,int ry);
 
     void on_actionClear_triggered();
@@ -47,11 +49,9 @@ private:
     QString help_text;
 
 signals:
-    void toDrawLineByDrag();
+    void toDrawShapeByDrag(shape shape_to_draw);
 
     void toDrawLineByPara(int a,int b,int c);
-
-    void toDrawCircleByDrag();
 
     void toDrawCircleByPara(int x0,int y0,int r);
 

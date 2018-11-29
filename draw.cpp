@@ -3,18 +3,16 @@
 draw::draw(QWidget *parent) : QWidget(parent)
 {
 
-    able_to_drag = false;
-//    setCurrentShape(ELLIPSE);
+    able_dragging = false;
+    should_reload_pixmap = false;
+    current_dragging_state = INVALID;
 
     pixmap = QPixmap(WINDOW_WIDTH,WINDOW_HEIGHT);
     pixmap.fill(Qt::white);
+    temp_pixmap = pixmap;
 
     p1 = QPoint(0,0);
     p2 = QPoint(0,0);
-
-    buffer.reserve(10000);
-
-    moveTime = 0;
 
     ellipse_xc = 0;
     ellipse_yc = 0;
@@ -22,44 +20,54 @@ draw::draw(QWidget *parent) : QWidget(parent)
     ellipse_ry = 0;
 }
 
-//void draw::setCurrentShape(shape s)
-//{
-//    this->current_shape = s;
-//}
-
-void draw::drawing(bool temporary)
-{
-    QPainter painter(&pixmap);
-
-    switch(this->current_shape)
-    {
-    case LINE:
-        drawLine(temporary,painter);
-        break;
-    case CIRCLE:
-        drawCircle(temporary,painter);
-        break;
-    case ELLIPSE:
-        drawEllipse(temporary,painter);
-        break;
-    }
-
-    update();
-}
-
 void draw::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e);
-    QPainter painter(this);
-    painter.drawPixmap(0,0,WINDOW_WIDTH,WINDOW_HEIGHT,pixmap);
+
+    temp_pixmap = pixmap;
+    QPainter painter;
+
+
+    if(able_dragging)
+    {
+        if(current_dragging_state == DRAGGING || current_dragging_state == ALMOST_DONE)
+        {
+            painter.begin(&temp_pixmap);
+            switch(current_shape)
+            {
+            case LINE:
+                drawLine(painter);
+                break;
+            case CIRCLE:
+                drawCircle(painter);
+                break;
+            case ELLIPSE:
+                ellipse_xc = (p1.x()+p2.x())/2;
+                ellipse_yc = (p1.y()+p2.y())/2;
+                ellipse_rx = qAbs(p1.x()-p2.x())/2;
+                ellipse_ry = qAbs(p1.y()-p2.y())/2;
+                drawEllipse(painter);
+                break;
+            }
+            painter.end();
+
+            if(current_dragging_state == ALMOST_DONE)
+            {
+                current_dragging_state = WAITING;
+                pixmap = temp_pixmap;
+            }
+        }
+
+    }
+
+    painter.begin(this);
+    painter.drawPixmap(0,0,temp_pixmap);
+    painter.end();
+
 }
 
-void draw::drawLine(bool temporary,QPainter &painter)
+void draw::drawLine(QPainter &painter)
 {
-    QPen init_pen = painter.pen();
-    this->releaseBuffer(painter);
-    painter.setPen(init_pen);
-
     if(p1.x()==p2.x()||qAbs((p1.y()-p2.y())/(p1.x()-p2.x()))>=1)
     {
         QPoint p3,p4;
@@ -101,10 +109,6 @@ void draw::drawLine(bool temporary,QPainter &painter)
         int i = p3.x();
         for(int j = p3.y();j<=p4.y();j++)
         {
-            if(temporary)
-            {
-                buffer.push_back(getColoredPoint(i,j));
-            }
             painter.drawPoint(i,j);
 
 
@@ -162,12 +166,6 @@ void draw::drawLine(bool temporary,QPainter &painter)
         int j = p3.y();
         for(int i = p3.x();i<=p4.x();i++)
         {
-
-
-            if(temporary)
-            {
-                buffer.push_back(getColoredPoint(i,j));
-            }
             painter.drawPoint(i,j);
 
 
@@ -186,12 +184,8 @@ void draw::drawLine(bool temporary,QPainter &painter)
     }
 }
 
-void draw::drawCircle(bool temporary,QPainter &painter)
+void draw::drawCircle(QPainter &painter)
 {
-    QPen init_pen = painter.pen();
-    this->releaseBuffer(painter);
-    painter.setPen(init_pen);
-
     int radius = qFloor(qSqrt(qPow(p1.x()-p2.x(),2)+qPow(p1.y()-p2.y(),2)))/2;
     int x_move = (p1.x()+p2.x())/2;    //圆心与原点在x轴的偏移
     int y_move = (p1.y()+p2.y())/2;    //圆心与原点在y轴的偏移
@@ -200,19 +194,8 @@ void draw::drawCircle(bool temporary,QPainter &painter)
     int d = 1-radius;       //变量d初始值
     int x_delta = 3,y_delta = 5-radius -radius; //x和y的delta值
 
-    while(x<y)
+    while(x<=y)
     {
-        if(temporary)
-        {
-            buffer.push_back(getColoredPoint(x+x_move,y+y_move));
-            buffer.push_back(getColoredPoint(y+x_move,x+y_move));
-            buffer.push_back(getColoredPoint(-x+x_move,y+y_move));
-            buffer.push_back(getColoredPoint(y+x_move,-x+y_move));
-            buffer.push_back(getColoredPoint(x+x_move,-y+y_move));
-            buffer.push_back(getColoredPoint(-y+x_move,x+y_move));
-            buffer.push_back(getColoredPoint(-x+x_move,-y+y_move));
-            buffer.push_back(getColoredPoint(-y+x_move,-x+y_move));
-        }
         painter.drawPoint(x+x_move,y+y_move);
         painter.drawPoint(y+x_move,x+y_move);
         painter.drawPoint(-x+x_move,y+y_move);
@@ -239,60 +222,45 @@ void draw::drawCircle(bool temporary,QPainter &painter)
     }
 }
 
-colored_point draw::getColoredPoint(int x,int y)
-{
-    QRgb rgb = pixmap.copy(x,y,1,1).toImage().pixel(0,0);
-    return colored_point(x,y,rgb);
-}
-
 void draw::mousePressEvent(QMouseEvent *mpe)
 {
-    if(!able_to_drag)
+    if(!able_dragging)
         return;
+
     this->p1 = mpe->pos();
     this->p2 = mpe->pos();
+
+    current_dragging_state = DRAGGING;
+
+    update();
 
 
 }
 void draw::mouseMoveEvent(QMouseEvent *mpe)
 {
-    if(!able_to_drag)
+    if(current_dragging_state != DRAGGING)
         return;
-    moveTime = (moveTime+1)%3;
-    if(moveTime==1)
-    {
-        this->p2 = mpe->pos();
-        this->drawing(true);
-    }
+
+    this->p2 = mpe->pos();
+
+    update();
 }
 void draw::mouseReleaseEvent(QMouseEvent *mpe)
 {
-    if(!able_to_drag)
+    Q_UNUSED(mpe);
+
+    if(current_dragging_state!=DRAGGING)
         return;
-    this->p2=mpe->pos();
-    this->drawing(false);
+
+    current_dragging_state = ALMOST_DONE;
+
+    update();
 }
 
-void draw::releaseBuffer(QPainter &painter)
-{
-    if(!this->buffer.empty())
-    {
-        for(QVector<colored_point>::iterator i=buffer.begin();i!=buffer.end();i++)
-        {
-            QColor color(i->rgb);
-            painter.setPen(color);
-            painter.drawPoint(i->x,i->y);
-        }
-        buffer.clear();
-    }
-}
-
-
-void draw::drawEllipse(bool temporary,QPainter &painter)
+void draw::drawEllipse(QPainter &painter)
 {
     int rx = ellipse_rx,ry=ellipse_ry;
     int xc = ellipse_xc,yc =ellipse_yc;
-    Q_UNUSED(temporary);
 
     int p = ry*ry-rx*rx*ry+rx*rx/4; //区域1初始决策参数
     int x=0,y=ry;                   //初始点
@@ -336,15 +304,10 @@ void draw::drawEllipse(bool temporary,QPainter &painter)
     }
 }
 
-void draw::toDrawLineByDrag()
-{
-    able_to_drag = true;
-    current_shape = LINE;
-}
 
 void draw::toDrawLineByPara(int a,int b,int c)
 {
-    able_to_drag = false;
+    able_dragging = false;
     current_shape = LINE;
 
     int max_x = this->size().width();
@@ -354,18 +317,12 @@ void draw::toDrawLineByPara(int a,int b,int c)
     p2.setX(max_x);
     p2.setY((-c-a*max_x)/b);
 
-    drawing(false);
 }
 
-void draw::toDrawCircleByDrag()
-{
-    able_to_drag = true;
-    current_shape = CIRCLE;
-}
 
 void draw::toDrawCircleByPara(int x0,int y0,int r)
 {
-    able_to_drag = false;
+    able_dragging = false;
     current_shape = CIRCLE;
 
     p1.setX(x0-r);
@@ -373,42 +330,37 @@ void draw::toDrawCircleByPara(int x0,int y0,int r)
     p2.setX(x0+r);
     p2.setY(y0);
 
-    drawing(false);
+    //    drawing(false);
 }
 
 void draw::toDrawEllipseByPara(int xc,int rx,int yc,int ry)
 {
-    able_to_drag = false;
+    able_dragging = false;
     current_shape = ELLIPSE;
 
     ellipse_xc = xc;
     ellipse_yc = yc;
     ellipse_rx = rx;
     ellipse_ry = ry;
-
-    drawing(false);
 }
 
 void draw::clearPixmap()
 {
-    QPainter painter(&pixmap);
-    painter.setPen(Qt::white);
-
-    int x = this->size().width();
-    int y = this->size().height();
-
-    for(int i=0;i<x;i++)
-    {
-        for(int j=0;j<y;j++)
-        {
-            painter.drawPoint(i,j);
-        }
-    }
-
+    temp_pixmap.fill(Qt::white);
+    pixmap = temp_pixmap;
     update();
+
 }
 
 void draw::savePixmap(QString path)
 {
     pixmap.save(path,"png");
+}
+
+
+void draw::toDrawShapeByDrag(shape shape_to_draw)
+{
+    able_dragging = true;
+    current_dragging_state = WAITING;
+    current_shape = shape_to_draw;
 }

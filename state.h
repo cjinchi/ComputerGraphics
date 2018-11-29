@@ -3,6 +3,8 @@
 
 enum shape{LINE,CIRCLE,ELLIPSE};
 
-enum input_type{DRAG,PARAMETER};
+enum dragging_state {INVALID,WAITING,DRAGGING,ALMOST_DONE};
+
+enum global_state {NONE,DRAG};
 
 #endif // STATE_H
