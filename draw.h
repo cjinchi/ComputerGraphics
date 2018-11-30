@@ -26,6 +26,9 @@ private:
     QPixmap temp_temp_pixmap;
     QPoint p1,p2;
     QVector<QPoint> points;
+    QPoint p1_history,p2_history;
+    QVector<QPoint> points_history;
+    QPoint center,center_history;
 
     int ellipse_xc,ellipse_yc;
     int ellipse_rx,ellipse_ry;
@@ -34,21 +37,24 @@ private:
     bool first_time_using_polygon;
 private:
 
+    //Algorithm
     void drawLine(QPainter &painter);
     void drawCircle(QPainter &painter);
     void drawEllipse(QPainter &painter);
     void drawPolygon(QPainter &painter);
     void fill(QPainter &painter);
 
+    //System
     void mousePressEvent(QMouseEvent *mpe);
     void mouseReleaseEvent(QMouseEvent *mpe);
     void mouseMoveEvent(QMouseEvent *mpe);
     void paintEvent(QPaintEvent *e);
 
+    //Supporting
     int isEdit(QPoint p);
     void draw_small_point(QPainter &painter,QPoint p);
+    void draw_small_rectangle(QPainter &painter,QPoint p);
     void save_current_shape();
-
 
 signals:
 

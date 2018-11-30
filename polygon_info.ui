@@ -45,7 +45,7 @@
     </font>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;请&lt;span style=&quot; color:#ff0000;&quot;&gt;点击(非拖拽)&lt;/span&gt;鼠标，确定多边形的各个&lt;/p&gt;&lt;p&gt;顶点，当首尾相连后即可拖拽顶点编辑。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;请&lt;span style=&quot; color:#ff0000;&quot;&gt;点击(非拖拽)&lt;/span&gt;鼠标，确定多边形的各个&lt;/p&gt;&lt;p&gt;顶点，当首尾相连后即可拖拽顶点编辑&lt;/p&gt;&lt;p&gt;或拖动中心移动。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>

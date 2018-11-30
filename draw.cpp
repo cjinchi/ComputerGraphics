@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include "polygon_info.h"
 #include <QImage>
+#include <QCursor>
 
 draw::draw(QWidget *parent) : QWidget(parent)
 {
@@ -26,6 +27,8 @@ draw::draw(QWidget *parent) : QWidget(parent)
 
     first_time_using_polygon = true;
 
+    setCursor(Qt::ArrowCursor);
+
 }
 
 void draw::paintEvent(QPaintEvent *e)
@@ -36,7 +39,7 @@ void draw::paintEvent(QPaintEvent *e)
     QPainter painter;
     if(current_global_state == DRAG)
     {
-        if(current_dragging_state == DRAGGING || current_dragging_state == EDITING ||current_dragging_state==DECIDING)
+        if(current_dragging_state == MOVING||current_dragging_state == DRAGGING || current_dragging_state == EDITING ||current_dragging_state==DECIDING)
         {
             painter.begin(&temp_pixmap);
             switch(current_shape)
@@ -69,13 +72,17 @@ void draw::paintEvent(QPaintEvent *e)
                 for(int i=0;i<points.size();i++)
                 {
                     draw_small_point(painter,points[i]);
-
+                }
+                if(current_dragging_state == MOVING || current_dragging_state == EDITING ||current_dragging_state==DECIDING)
+                {
+                    draw_small_rectangle(painter,center);
                 }
             }
             else
             {
                 draw_small_point(painter,p1);
                 draw_small_point(painter,p2);
+                draw_small_rectangle(painter,(p1+p2)/2);
                 if(current_shape==ELLIPSE)
                 {
                     painter.setPen(Qt::DotLine);
@@ -323,6 +330,7 @@ void draw::mousePressEvent(QMouseEvent *mpe)
         {
             if(current_dragging_state == WAITING)
             {
+                setCursor(Qt::CrossCursor);
                 current_dragging_state = DRAGGING;
             }
             else if(current_dragging_state == DECIDING)
@@ -330,11 +338,21 @@ void draw::mousePressEvent(QMouseEvent *mpe)
                 editing_point_index = isEdit(mpe->pos());
                 if(editing_point_index>=0)
                 {
+                    setCursor(Qt::SizeFDiagCursor);
                     current_dragging_state = EDITING;
                 }
-                else
+                else if(editing_point_index == -2)
+                {
+                    setCursor(Qt::SizeAllCursor);
+                    current_dragging_state = MOVING;
+                    setCursor(Qt::SizeAllCursor);
+                    points_history = points;
+                    center_history = center;
+                }
+                else if(editing_point_index == -1)
                 {
                     save_current_shape();
+                    setCursor(Qt::CrossCursor);
                     current_dragging_state = DRAGGING;
                 }
             }
@@ -345,6 +363,7 @@ void draw::mousePressEvent(QMouseEvent *mpe)
             {
                 this->p1 = mpe->pos();
                 this->p2 = mpe->pos();
+                setCursor(Qt::CrossCursor);
                 current_dragging_state = DRAGGING;
             }
             else if(current_dragging_state == DECIDING)
@@ -352,21 +371,28 @@ void draw::mousePressEvent(QMouseEvent *mpe)
                 editing_point_index = isEdit(mpe->pos());
                 if(editing_point_index>=0)
                 {
+                    setCursor(Qt::SizeFDiagCursor);
                     current_dragging_state = EDITING;
                 }
-                else
+                else if(editing_point_index == -2)
+                {
+                    setCursor(Qt::SizeAllCursor);
+                    current_dragging_state = MOVING;
+                    p1_history = p1;
+                    p2_history = p2;
+                }
+                else if(editing_point_index == -1)
                 {
                     save_current_shape();
 
                     this->p1 = mpe->pos();
                     this->p2 = mpe->pos();
+                    setCursor(Qt::CrossCursor);
                     current_dragging_state = DRAGGING;
                 }
             }
         }
     }
-
-
 
     update();
 }
@@ -379,10 +405,19 @@ void draw::mouseMoveEvent(QMouseEvent *mpe)
     {
         if(current_dragging_state==EDITING)
         {
+            center = (center*points.size()-points[editing_point_index]+mpe->pos())/points.size();
             points[editing_point_index] = mpe->pos();
             if(editing_point_index == 0)
             {
                 points[points.size()-1]=mpe->pos();
+            }
+        }
+        else if(current_dragging_state == MOVING)
+        {
+            center = center_history + mpe->pos()-center_history;
+            for(int i=0;i<points.size();i++)
+            {
+                points[i] = points_history[i]+mpe->pos()-center_history;
             }
         }
     }
@@ -402,6 +437,10 @@ void draw::mouseMoveEvent(QMouseEvent *mpe)
             {
                 this->p2 = mpe->pos();
             }
+        }else if(current_dragging_state == MOVING)
+        {
+            p1 =p1_history + (mpe->pos()-(p1_history+p2_history)/2);
+            p2 =p2_history + (mpe->pos()-(p1_history+p2_history)/2);
         }
     }
 
@@ -423,6 +462,14 @@ void draw::mouseReleaseEvent(QMouseEvent *mpe)
             if(points.size()>2&&(qPow(mpe->pos().x()-points[0].x(),2)+qPow(mpe->pos().y()-points[0].y(),2)<100))
             {
                 points.push_back(points[0]);
+                center.setX(0);
+                center.setY(0);
+                for(int i=0;i<points.size();i++)
+                {
+                    center += points[i];
+                }
+                center/=points.size();
+                setCursor(Qt::ArrowCursor);
                 current_dragging_state = DECIDING;
             }
             else
@@ -432,11 +479,18 @@ void draw::mouseReleaseEvent(QMouseEvent *mpe)
         }
         else if (current_dragging_state == EDITING)
         {
+            setCursor(Qt::ArrowCursor);
+            current_dragging_state = DECIDING;
+        }
+        else if(current_dragging_state==MOVING)
+        {
+            setCursor(Qt::ArrowCursor);
             current_dragging_state = DECIDING;
         }
     }
     else
     {
+        setCursor(Qt::ArrowCursor);
         current_dragging_state = DECIDING;
     }
 
@@ -556,6 +610,11 @@ void draw::clearPixmap()
 
 void draw::savePixmap(QString path)
 {
+    save_current_shape();
+    if(current_global_state == DRAG)
+    {
+        current_dragging_state = WAITING;
+    }
     pixmap.save(path,"png");
 }
 
@@ -580,8 +639,13 @@ void draw::toDrawShapeByDrag(shape shape_to_draw)
 
 int draw::isEdit(QPoint p)
 {
+
     if(current_shape == POLYGON)
     {
+        if(qPow(center.x()-p.x(),2)+qPow(center.y()-p.y(),2)<100)
+        {
+            return -2;
+        }
         for(int i=0;i<points.size();i++)
         {
             if(qPow(points[i].x()-p.x(),2)+qPow(points[i].y()-p.y(),2)<100)
@@ -592,6 +656,11 @@ int draw::isEdit(QPoint p)
     }
     else
     {
+        QPoint c = (p1+p2)/2;
+        if(qPow(c.x()-p.x(),2)+qPow(c.y()-p.y(),2)<100)
+        {
+            return -2;
+        }
         int p1_dis = qFloor(qPow(p1.x()-p.x(),2)+qPow(p1.y()-p.y(),2));
         int p2_dis = qFloor(qPow(p2.x()-p.x(),2)+qPow(p2.y()-p.y(),2));
         if(p1_dis<p2_dis)
@@ -631,6 +700,7 @@ void draw::toFill()
     save_current_shape();
     current_global_state = FILL;
     current_fill_state = FILL_WAITING;
+
     update();
 }
 
@@ -659,7 +729,7 @@ void draw::fill(QPainter &painter)
         for(int i=0;i<4;i++)
         {
             temp_temp = temp+delta[i];
-            if(image.pixelColor(temp_temp)==Qt::white&&temp_temp.x()>=0&&temp_temp.x()<image.width()&&temp_temp.y()>=0&&temp_temp.y()<image.height())
+            if(image.pixelColor(temp_temp)==Qt::white&&temp_temp.x()>=0&&temp_temp.x()<pixmap.width()&&temp_temp.y()>=0&&temp_temp.y()<pixmap.height())
 //            if(image.pixelColor(temp_temp)==Qt::white)
             {
                 pv.push_back(temp_temp);
@@ -668,4 +738,11 @@ void draw::fill(QPainter &painter)
     }
     update();
 
+}
+
+void draw::draw_small_rectangle(QPainter &painter,QPoint p)
+{
+    painter.setBrush(Qt::blue);
+    painter.drawRect(p.x()-7,p.y()-7,14,14);
+    painter.setBrush(Qt::NoBrush);
 }

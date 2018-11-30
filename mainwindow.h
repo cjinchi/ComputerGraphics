@@ -6,6 +6,7 @@
 #include "config.h"
 #include "state.h"
 #include "line_select.h"
+#include <QAction>
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +52,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QString help_text;
+
 
 signals:
     void toDrawShapeByDrag(shape shape_to_draw);

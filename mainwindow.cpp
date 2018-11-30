@@ -6,6 +6,7 @@
 #include<QDebug>
 #include<QFileDialog>
 #include<QMessageBox>
+#include <QIcon>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -14,13 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setFixedSize(WINDOW_WIDTH,WINDOW_HEIGHT);
 
     help_text = tr("目前使用Qt的坐标系统，绘图区域左上角为坐标原点，从左到右为x轴正方向，从上到下为y轴正方向.建议直接使用方程默认参数进行测试.");
-
-//    QMessageBox msgbox;
-//    msgbox.setFixedSize(800,600);
-//    msgbox.setWindowTitle(tr("说明"));
-//    msgbox.setText(help_text);
-//    msgbox.setModal(true);
-//    msgbox.exec();
 }
 
 MainWindow::~MainWindow()

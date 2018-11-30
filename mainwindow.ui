@@ -49,8 +49,8 @@
   <widget class="QToolBar" name="mainToolBar">
    <property name="minimumSize">
     <size>
-     <width>800</width>
-     <height>50</height>
+     <width>0</width>
+     <height>0</height>
     </size>
    </property>
    <property name="maximumSize">
@@ -59,8 +59,14 @@
      <height>50</height>
     </size>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
    <property name="movable">
     <bool>false</bool>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -77,21 +83,42 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionLine">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/icons/line.png</normaloff>:/icons/res/icons/line.png</iconset>
+   </property>
    <property name="text">
     <string>直线</string>
    </property>
   </action>
   <action name="actionCircle">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/res/icons/circle.png</normalon>
+     <activeon>:/icons/res/icons/circle.png</activeon>
+    </iconset>
+   </property>
    <property name="text">
     <string>圆</string>
    </property>
   </action>
   <action name="actionEllipse">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/res/icons/ellipse.png</normalon>
+     <activeon>:/icons/res/icons/ellipse.png</activeon>
+    </iconset>
+   </property>
    <property name="text">
     <string>椭圆</string>
    </property>
   </action>
   <action name="actionClear">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/res/icons/clear.png</normaloff>
+     <normalon>:/icons/res/icons/clear.png</normalon>:/icons/res/icons/clear.png</iconset>
+   </property>
    <property name="text">
     <string>清空</string>
    </property>
@@ -107,11 +134,23 @@
    </property>
   </action>
   <action name="actionpolygon">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/res/icons/polygon.png</normalon>
+     <activeon>:/icons/res/icons/polygon.png</activeon>
+    </iconset>
+   </property>
    <property name="text">
     <string>多边形</string>
    </property>
   </action>
   <action name="actionfill">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/res/icons/fill.png</normalon>
+     <activeon>:/icons/res/icons/fill.png</activeon>
+    </iconset>
+   </property>
    <property name="text">
     <string>填充</string>
    </property>
@@ -135,7 +174,9 @@
    </slots>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>MainWindow</sender>

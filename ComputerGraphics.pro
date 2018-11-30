@@ -58,3 +58,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 PRECOMPILED_HEADER = stable.h
 QMAKE_CXXFLAGS += /MP
+
+RESOURCES +=
