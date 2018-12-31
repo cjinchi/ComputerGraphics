@@ -8,6 +8,7 @@
 #include<QMessageBox>
 #include <QIcon>
 #include <QColorDialog>
+#include "myglwidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     emit changeColor(qcd.currentColor());
 
     help_text = tr("目前使用Qt的坐标系统，绘图区域左上角为坐标原点，从左到右为x轴正方向，从上到下为y轴正方向.建议直接使用方程默认参数进行测试.");
+
 
 
 }
@@ -178,4 +180,11 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_spinBox_valueChanged(int arg1)
 {
     emit changePenWidth(arg1);
+}
+
+void MainWindow::on_action3D_triggered()
+{
+    MyGLWidget *w = new MyGLWidget();
+    w->resize(1280,960);
+    w->show();
 }

@@ -4,9 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+LIBS += opengl32.lib glu32.lib
 
 TARGET = ComputerGraphics
 TEMPLATE = app
@@ -32,7 +34,8 @@ SOURCES += \
     circle_select.cpp \
     ellipse_select.cpp \
     polygon_info.cpp \
-    curve_info.cpp
+    curve_info.cpp \
+    myglwidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -44,7 +47,8 @@ HEADERS += \
     circle_select.h \
     ellipse_select.h \
     polygon_info.h \
-    curve_info.h
+    curve_info.h \
+    myglwidget.h
 
 FORMS += \
         mainwindow.ui \

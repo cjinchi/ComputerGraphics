@@ -194,6 +194,7 @@
    <addaction name="actionclip"/>
    <addaction name="actionfill"/>
    <addaction name="actionClear"/>
+   <addaction name="action3D"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionLine">
@@ -277,6 +278,11 @@
   <action name="actionclip">
    <property name="text">
     <string>裁剪</string>
+   </property>
+  </action>
+  <action name="action3D">
+   <property name="text">
+    <string>3D模型</string>
    </property>
   </action>
  </widget>
