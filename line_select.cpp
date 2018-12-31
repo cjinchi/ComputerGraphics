@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QRegExpValidator>
 #include <QMessageBox>
+#include <QColorDialog>
 
 line_select::line_select(QWidget *parent) :
     QDialog(parent),

@@ -7,6 +7,8 @@
 #include "state.h"
 #include "line_select.h"
 #include <QAction>
+#include <QSlider>
+#include <QColorDialog>
 
 namespace Ui {
 class MainWindow;
@@ -49,9 +51,22 @@ private slots:
 
     void on_actionfill_triggered();
 
+    void on_actioncurve_triggered();
+
+    void on_actionclip_triggered();
+
+    void on_rotate_valueChanged(int value);
+
+    void on_pushButton_clicked();
+
+    void on_spinBox_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
     QString help_text;
+    QSlider rotate;
+    QSlider zoom;
+    QColorDialog qcd;
 
 
 signals:
@@ -68,6 +83,13 @@ signals:
     void clearPixmap();
 
     void savePixmap(QString path);
+
+    void changeColor(QColor color);
+
+    void changePenWidth(int width);
+
+public slots:
+    void setSlidersVisible(bool enable);
 };
 
 #endif // MAINWINDOW_H

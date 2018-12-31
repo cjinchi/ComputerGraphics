@@ -7,6 +7,8 @@
 #include<QFileDialog>
 #include<QMessageBox>
 #include <QIcon>
+#include <QColorDialog>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -14,7 +16,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setFixedSize(WINDOW_WIDTH,WINDOW_HEIGHT);
 
+    ui->rotate->setMaximum(360);
+    ui->rotate->setMinimum(0);
+    ui->rotate->setValue(180);
+
+    ui->zoom->setMinimum(0);
+    ui->zoom->setMaximum(200);
+    ui->zoom->setValue(100);
+
+    setSlidersVisible(true);
+
+    qcd.setCurrentColor(Qt::black);
+    emit changeColor(qcd.currentColor());
+
     help_text = tr("目前使用Qt的坐标系统，绘图区域左上角为坐标原点，从左到右为x轴正方向，从上到下为y轴正方向.建议直接使用方程默认参数进行测试.");
+
+
 }
 
 MainWindow::~MainWindow()
@@ -116,4 +133,49 @@ void MainWindow::on_actionpolygon_triggered()
 void MainWindow::on_actionfill_triggered()
 {
     emit toFill();
+}
+
+void MainWindow::on_actioncurve_triggered()
+{
+    emit toDrawShapeByDrag(CURVE);
+}
+
+void MainWindow::on_actionclip_triggered()
+{
+    emit toDrawShapeByDrag(CLIP);
+}
+
+void MainWindow::on_rotate_valueChanged(int value)
+{
+//    qDebug()<<value;
+}
+
+void MainWindow::setSlidersVisible(bool enable)
+{
+    if(enable)
+    {
+        ui->label->show();
+        ui->label_2->show();
+        ui->rotate->show();
+        ui->zoom->show();
+    }else{
+        ui->label->hide();
+        ui->label_2->hide();
+        ui->rotate->hide();
+        ui->zoom->hide();
+    }
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    QColorDialog qcd;
+    qcd.setModal(true);
+    qcd.exec();
+    emit changeColor(qcd.currentColor());
+}
+
+void MainWindow::on_spinBox_valueChanged(int arg1)
+{
+    emit changePenWidth(arg1);
 }

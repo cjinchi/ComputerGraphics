@@ -15,12 +15,124 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="draw" name="widget" native="true">
         <property name="cursor">
          <cursorShape>CrossCursor</cursorShape>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="sliders">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>画笔颜色</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>选择颜色</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>画笔宽度</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBox">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="value">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>旋转</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="rotate">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>缩放</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="zoom">
+        <property name="maximumSize">
+         <size>
+          <width>1000</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>50</number>
+        </property>
+        <property name="tracking">
+         <bool>true</bool>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="invertedControls">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -78,13 +190,15 @@
    <addaction name="actionCircle"/>
    <addaction name="actionEllipse"/>
    <addaction name="actionpolygon"/>
+   <addaction name="actioncurve"/>
+   <addaction name="actionclip"/>
    <addaction name="actionfill"/>
    <addaction name="actionClear"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionLine">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/icons/line.png</normaloff>:/icons/res/icons/line.png</iconset>
    </property>
    <property name="text">
@@ -155,6 +269,16 @@
     <string>填充</string>
    </property>
   </action>
+  <action name="actioncurve">
+   <property name="text">
+    <string>曲线</string>
+   </property>
+  </action>
+  <action name="actionclip">
+   <property name="text">
+    <string>裁剪</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -164,6 +288,9 @@
    <header>draw.h</header>
    <container>1</container>
    <slots>
+    <signal>setSlidersVisible(bool)</signal>
+    <signal>setRotateSignal(int)</signal>
+    <signal>setZoomSignal(int)</signal>
     <slot>toDrawLineByPara(int,int,int)</slot>
     <slot>toDrawCircleByPara(int,int,int)</slot>
     <slot>toDrawEllipseByPara(int,int,int,int)</slot>
@@ -171,12 +298,14 @@
     <slot>savePixmap(QString)</slot>
     <slot>toDrawShapeByDrag(shape)</slot>
     <slot>toFill()</slot>
+    <slot>rotateChanged(int)</slot>
+    <slot>zoomChanged(int)</slot>
+    <slot>changeCurrentColor(QColor)</slot>
+    <slot>changePenWidth(int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="res.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>MainWindow</sender>
@@ -290,6 +419,118 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>rotate</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>widget</receiver>
+   <slot>rotateChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>597</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>242</x>
+     <y>186</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>setSlidersVisible(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setSlidersVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>69</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoom</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>widget</receiver>
+   <slot>zoomChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>792</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>329</x>
+     <y>241</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>setZoomSignal(int)</signal>
+   <receiver>zoom</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>624</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>792</x>
+     <y>112</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widget</sender>
+   <signal>setRotateSignal(int)</signal>
+   <receiver>rotate</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>131</x>
+     <y>238</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>531</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>changeColor(QColor)</signal>
+   <receiver>widget</receiver>
+   <slot>changeCurrentColor(QColor)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>296</x>
+     <y>197</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>259</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>changePenWidth(int)</signal>
+   <receiver>widget</receiver>
+   <slot>changePenWidth(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>148</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>88</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>toDrawLineByDrag()</signal>
@@ -301,5 +542,8 @@
   <signal>savePixmap(QString)</signal>
   <signal>toDrawShapeByDrag(shape)</signal>
   <signal>toFill()</signal>
+  <signal>changeColor(QColor)</signal>
+  <signal>changePenWidth(int)</signal>
+  <slot>setSlidersVisible(bool)</slot>
  </slots>
 </ui>

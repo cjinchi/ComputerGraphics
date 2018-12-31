@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>polygon_info</class>
- <widget class="QDialog" name="polygon_info">
+ <class>curve_info</class>
+ <widget class="QDialog" name="curve_info">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>606</width>
-    <height>283</height>
+    <width>640</width>
+    <height>354</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>210</y>
-     <width>501</width>
+     <x>10</x>
+     <y>290</y>
+     <width>621</width>
      <height>32</height>
     </rect>
    </property>
@@ -32,9 +32,9 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>40</y>
-     <width>531</width>
+     <x>40</x>
+     <y>50</y>
+     <width>591</width>
      <height>141</height>
     </rect>
    </property>
@@ -45,7 +45,7 @@
     </font>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;请&lt;span style=&quot; color:#ff0000;&quot;&gt;点击(非拖拽)&lt;/span&gt;鼠标，确定曲线的各个&lt;/p&gt;&lt;p&gt;顶点，当再次点击起始点时结束输入。&lt;/p&gt;&lt;p&gt;此时可以对曲线进行编辑&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;请&lt;span style=&quot; color:#ff0000;&quot;&gt;点击(非拖拽)&lt;/span&gt;鼠标，确定多边形的各个&lt;/p&gt;&lt;p&gt;顶点，当首尾相连后即可拖拽顶点编辑&lt;/p&gt;&lt;p&gt;或拖动中心移动。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
@@ -54,7 +54,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>polygon_info</receiver>
+   <receiver>curve_info</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -70,7 +70,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>polygon_info</receiver>
+   <receiver>curve_info</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
