@@ -1033,6 +1033,9 @@ void draw::clip()
                 }
             }
         }
+
+
+
         if(done){
             continue;
         }else{

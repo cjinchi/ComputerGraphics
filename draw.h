@@ -73,7 +73,6 @@ private:
     void mouseDoubleClickEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *e);
 
-
     //Supporting
     int isEdit(QPoint p);
     void draw_small_point(QPainter &painter,QPoint p);
